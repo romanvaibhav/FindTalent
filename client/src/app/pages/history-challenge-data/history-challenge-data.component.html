@@ -1,0 +1,37 @@
+<div class="w-100%  mt-4 ml-2 mr-2 ">
+  <h2 class="text-lg font-bold mb-5 m-5">Challenges</h2>
+
+  <div *ngFor="let challenge of challengeDetail; let i = index"
+    [ngClass]="{
+      'bg-green-200': challenge.score == 'Completed',
+      'bg-green-400': challenge.score == 'Outstanding',
+      'bg-green-50': challenge.score == 'Partial Solution',
+      'bg-red-300': challenge.score == 'Not Attempted'
+    }"
+    class="mt-5 p-4 shadow-md rounded-md relative border-2  ">
+
+    <!-- Title Row with Delete & Copy Icons -->
+    <div class="flex justify-between items-center">
+      <h3 class="font-semibold mb-6">{{ challenge.title }}</h3>
+      <div class="flex space-x-2">
+        <!-- Delete Button -->
+      </div>
+    </div>
+
+    <!-- URL Row with Copy Icon -->
+    <div class="flex justify-between items-center">
+      <a [href]="challenge.url" target="_blank" class="text-blue-500 hover:underline">
+        {{ challenge.url }}
+      </a>
+    </div>
+
+    <div>
+      <label>Status: {{ challenge.status }}</label>
+    </div>
+
+    <div>
+      <label>Score: {{ challenge.score }}</label>
+    </div>
+
+  </div>
+</div>

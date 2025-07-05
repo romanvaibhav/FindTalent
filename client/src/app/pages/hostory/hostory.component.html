@@ -1,0 +1,148 @@
+<div class="dark:text-white dark:bg-[#0f172a] h-screen">
+  <div
+    class="bg-blue-50 w-full h-14 rounded-md flex justify-between dark:text-white dark:bg-[#0f172a] items-center px-4 mr-10"
+  >
+    <div class="flex space-x-2">
+      <select
+        [(ngModel)]="sortBy"
+        (change)="applyFilters()"
+        class="border border-gray-400 bg-blue-100 text-gray-700 p-2 rounded-md focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="createdAt">Filter</option>
+        <option value="candidateName">Name</option>
+        <option value="score">Score</option>
+      </select>
+      <input
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+        class="p-2 w-80 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+        type="text"
+        placeholder="Search"
+      />
+    </div>
+    <div>
+      <label for="pageLimit">Page Limit</label>
+      <select
+        [(ngModel)]="pageLimit"
+        (change)="onPageLimitChange($event)"
+        id="pageLimit"
+      >
+        <option *ngFor="let page of pageArray" [value]="page">
+          {{ page }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="p-4 rounded mt-2 m-2 border dark:text-black dark:bg-[#0f172a]">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        *ngFor="let candidate of sessionDate"
+        (click)="navigate(candidate._id)"
+        [ngClass]="{
+          'bg-green-100 ': candidate.score == 'Completed',
+          'bg-green-300 ': candidate.score == 'Outstanding',
+          'bg-green-50': candidate.score == 'Partial Solution',
+          'bg-red-300 ': candidate.score == 'Not Attempted'
+        }"
+        class="bg-gray-50 p-4 rounded border border-gray-300 shadow-md cursor-pointer flex flex-col items-center text-center space-y-4"
+      >
+        <!-- Project Title (Centered) -->
+        <div class="font-bold">
+          {{ candidate.candidateName }}
+        </div>
+
+        <!-- Skills (Centered, Wrapped) -->
+        <div class="w-full flex flex-wrap justify-center gap-2">
+          <span class="bg-gray-300 text-sm px-2 py-1 rounded">
+            Time-{{ candidate.time_duration }}
+          </span>
+          <span class="bg-gray-300 text-sm px-2 py-1 rounded">
+            {{ candidate.formattedDate }}
+          </span>
+        </div>
+
+        <!-- View Link (Centered) -->
+        <div class="font-bold">
+          {{ candidate.score }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav
+    aria-label="Page navigation example"
+    class="fixed bottom-0 left-0 w-full bg-white shadow-md dark:bg-gray-700 py-4"
+  >
+    <ul class="flex justify-center items-center -space-x-px h-10 text-base">
+      <!-- Previous Button -->
+      <li>
+        <a
+          (click)="goToPreviousPage()"
+          [class.opacity-50]="currentPage === 1"
+          class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-900 dark:border-gray-900 dark:text-white dark:hover:bg-gray-600 dark:hover:text-white"
+        >
+          <span class="sr-only">Previous</span>
+          <svg
+            class="w-3 h-3 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 1 1 5l4 4"
+            />
+          </svg>
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <ng-container *ngFor="let page of pageNumbers">
+        <li>
+          <a
+            (click)="goToPage(page)"
+            [ngClass]="{
+              'bg-blue-500 dark:bg-gray-700 text-white': currentPage === page,
+              'text-black hover:bg-gray-200 hover:text-black':
+                currentPage !== page
+            }"
+            class="flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded"
+          >
+            {{ page }}
+          </a>
+        </li>
+      </ng-container>
+
+      <!-- Next Button -->
+      <li>
+        <a
+          (click)="goToNextPage()"
+          [class.opacity-50]="currentPage === pageLimit"
+          class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        >
+          <span class="sr-only">Next</span>
+          <svg
+            class="w-3 h-3 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,10 @@
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+html {
+  @apply bg-white text-gray-900 transition-colors duration-300;
+}
+
+html.dark {
+  @apply bg-gray-900 text-white;
+}

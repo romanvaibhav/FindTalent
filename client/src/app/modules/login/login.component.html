@@ -1,0 +1,78 @@
+<div
+  class="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900"
+>
+  <div
+    class="w-full max-w-md p-6 bg-white rounded-lg shadow-md dark:bg-gray-400"
+  >
+    <form [formGroup]="loginForm">
+      <p class="text-xl font-semibold text-center text-gray-800 mb-10">
+        Sign in to your account
+      </p>
+
+      <!-- Email Input -->
+      <div class="mb-4">
+        <input
+          type="email"
+          placeholder="Enter email"
+          formControlName="email"
+          class="w-full p-3 border dark:bg-gray-200 border-gray-400 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <div class="h-2 text-red-500 text-sm mt-1">
+          <small
+            *ngIf="
+              loginForm.controls['email'].invalid &&
+              loginForm.controls['email'].touched
+            "
+          >
+            <span *ngIf="loginForm.controls['email'].errors?.['required']"
+              >Email is required!</span
+            >
+            <span *ngIf="loginForm.controls['email'].errors?.['invalid']"
+              >Please enter a valid email address!</span
+            >
+          </small>
+        </div>
+      </div>
+
+      <!-- Password Input -->
+      <div class="mb-4">
+        <input
+          type="password"
+          placeholder="Enter password"
+          formControlName="password"
+          class="w-full p-3 border dark:bg-gray-200 border-gray-400 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <div class="h-2 text-red-500 text-sm mt-1">
+          <small
+            *ngIf="
+              loginForm.controls['password'].invalid &&
+              loginForm.controls['password'].touched
+            "
+          >
+            <span *ngIf="loginForm.controls['password'].errors?.['required']"
+              >Password is required!</span
+            >
+            <span *ngIf="loginForm.controls['password'].errors?.['invalid']"
+              >Enter a valid password!</span
+            >
+          </small>
+        </div>
+      </div>
+
+      <!-- Sign In Button -->
+      <button
+        class="w-full p-3 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        (click)="loginBtn()"
+      >
+        Sign In
+      </button>
+
+      <p class="mt-4 text-center text-gray-600 text-sm">
+        No account?
+        <a routerLink="/regi" class="text-indigo-600 hover:underline"
+          >Sign up</a
+        >
+      </p>
+    </form>
+  </div>
+</div>

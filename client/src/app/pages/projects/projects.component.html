@@ -1,0 +1,478 @@
+<div class="w-full h-screen flex flex-col">
+  <!-- Top Container -->
+  <div
+    class="bg-blue-50 w-full h-14 rounded-md flex justify-between items-center px-4 dark:text-white dark:bg-[#0f172a]"
+  >
+    <div class="flex space-x-2">
+      <select
+        [(ngModel)]="sortBy"
+        (change)="applyFilters()"
+        class="border border-gray-400 bg-blue-100 text-gray-700 p-2 rounded-md focus:ring-2 focus:ring-blue-400"
+      >
+        <option value="createdAt">Filter</option>
+        <option value="title">Name</option>
+      </select>
+
+      <input
+        [(ngModel)]="searchText"
+        (input)="applyFilters()"
+        class="w-80 p-2 border dark:bg-gray-200 dark:text-black border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+        type="text"
+        placeholder="Search"
+      />
+    </div>
+
+    <div class="">
+      <label for="pageLimit">Page Limit</label>
+      <select
+        [(ngModel)]="pageLimit"
+        (change)="onPageLimitChange($event)"
+        id="pageLimit"
+        class="dark:bg-gray-200 dark:text-black"
+      >
+        <option *ngFor="let page of pageArray" [value]="page">
+          {{ page }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <button
+        (click)="openModal()"
+        class="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold text-sm py-2 px-4 rounded-md shadow-md transition-transform transform hover:scale-105 hover:from-blue-700 hover:to-blue-900"
+      >
+        Create Project
+      </button>
+    </div>
+  </div>
+
+  <div class="dark:text-white dark:bg-[#0f172a]">
+    <div class="p-4 rounded mt-2 m-2 border dark:text-white dark:bg-[#0f172a]">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          *ngFor="let proj of projectData?.employees"
+          (click)="isupdate(proj)"
+          class="bg-gray-50 dark:bg-gray-700 dark:text-white p-4 rounded border border-gray-300 shadow-md cursor-pointer flex flex-col items-center text-center space-y-4"
+        >
+          <!-- Project Title (Centered) -->
+          <div>
+            <a
+              class="text-gray-800 dark:text-white hover:underline font-bold text-lg"
+            >
+              {{ proj.title }}
+            </a>
+          </div>
+
+          <!-- Skills (Centered, Wrapped) -->
+          <div class="w-full flex flex-wrap justify-center gap-2">
+            <span
+              *ngFor="let skill of proj.skills"
+              class="bg-gray-300 text-sm px-2 py-1 rounded"
+            >
+              {{ skill }}
+            </span>
+          </div>
+
+          <!-- View Link (Centered) -->
+          <div>
+            <a
+              [routerLink]="['/assesment']"
+              [queryParams]="{ id: proj._id }"
+              class="text-blue-500 hover:underline font-medium"
+            >
+              View
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <nav
+    aria-label="Page navigation example"
+    class="fixed bottom-0 left-0 dark:bg-gray-800 dark:text-white w-full bg-white shadow-md py-4"
+  >
+    <ul class="flex justify-center items-center -space-x-px h-10 text-base">
+      <!-- Previous Button -->
+      <li>
+        <a
+          (click)="goToPreviousPage()"
+          [class.opacity-50]="currentPage === 1"
+          class="flex items-center justify-center dark:bg-gray-950 px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+        >
+          <span class="sr-only">Previous</span>
+          <svg
+            class="w-3 h-3 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 1 1 5l4 4"
+            />
+          </svg>
+        </a>
+      </li>
+
+      <!-- Page Numbers -->
+      <ng-container *ngFor="let page of pageNumbers">
+        <li>
+          <a
+            (click)="goToPage(page)"
+            [ngClass]="{
+              'bg-blue-500 dark:bg-gray-700 text-white': currentPage === page,
+              'text-black hover:bg-gray-200 hover:text-black':
+                currentPage !== page
+            }"
+            class="flex items-center justify-center px-4 h-10 leading-tight border border-gray-300 rounded"
+          >
+            {{ page }}
+          </a>
+        </li>
+      </ng-container>
+
+      <!-- Next Button -->
+      <li>
+        <a
+          (click)="goToNextPage()"
+          [class.opacity-50]="currentPage === pageLimit"
+          class="flex items-center justify-center px-4 h-10 leading-tight dark:bg-gray-700 dark:text-white text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:hover:text-white"
+        >
+          <span class="sr-only">Next</span>
+          <svg
+            class="w-3 h-3 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>
+<div
+  *ngIf="isUpdate"
+  id="crud-modal"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+>
+  <div class="relative p-4 w-full max-w-md max-h-full">
+    <!-- Modal content -->
+    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+      <!-- Modal header -->
+      <div
+        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Modify Employee Details
+        </h3>
+        <button
+          (click)="isclose()"
+          type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="crud-modal"
+        >
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <form [formGroup]="projForm" class="p-4 md:p-5">
+        <div class="grid gap-4 mb-4">
+          <div class="col-span-2">
+            <label
+              for="title"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Project Title</label
+            >
+            <input
+              formControlName="title"
+              type="text"
+              name="name"
+              id="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Enter Project Title..."
+            />
+          </div>
+
+          <form [formGroup]="techForm">
+            <h3 class="text-lg font-semibold mb-2">Select Technologies</h3>
+
+            <!-- Technology Autocomplete -->
+            <div class="mt-4 flex items-center">
+              <input
+                formControlName="customTechnology"
+                placeholder="Type a technology"
+                class="border p-2 rounded w-full"
+                (input)="onInputChange()"
+                [matAutocomplete]="auto"
+                [value]="techForm.get('customTechnology')?.value"
+              />
+
+              <mat-autocomplete
+                class="h-20 bg-white opacity-100 backdrop-blur-md"
+                #auto="matAutocomplete"
+                (optionSelected)="onTechnologySelected($event)"
+              >
+                <mat-option
+                  *ngFor="let tech of filteredTechnologies"
+                  [value]="tech"
+                >
+                  {{ tech }}
+                </mat-option>
+                <mat-option
+                  *ngIf="isNewTechnology"
+                  (click)="addCustomTechnology()"
+                >
+                  Add "{{ techForm.get("customTechnology")?.value }}"
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+
+            <!-- Selected Technologies Display -->
+            <div>
+              <h3 class="text-sm font-semibold">Selected Technologies:</h3>
+              <div class="flex flex-wrap h-10 overflow-scroll">
+                <span
+                  *ngFor="let tech of selectedTechnologies"
+                  class="bg-blue-200 text-blue-800 px-1 py-1 rounded-full text-sm m-1"
+                >
+                  {{ tech }}
+                  <button
+                    type="button"
+                    (click)="removeTechnology(tech)"
+                    class="ml-2 text-red-600"
+                  >
+                    &times;
+                  </button>
+                </span>
+              </div>
+            </div>
+          </form>
+
+          <div class="col-span-2">
+            <label
+              for="StackBlitzUrl"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >StackBlitzUrl</label
+            >
+            <input
+              formControlName="StackBlitzUrl"
+              type="email"
+              name="name"
+              id="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Enter StackBlitzUrl.."
+            />
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <button
+            (click)="sendBtn()"
+            class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            <svg
+              class="me-1 -ms-1 w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            Save
+          </button>
+
+          <button
+            (click)="deleteBtn()"
+            class="text-white bg-red-600 hover:bg-red-700 pl-8 inline-flex items-end rounded-lg text-sm px-5 py-2.5"
+          >
+            Delete
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="isModalOpen"
+  id="crud-modal"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+>
+  <div class="relative p-4 w-full max-w-md max-h-full">
+    <!-- Modal content -->
+    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+      <!-- Modal header -->
+      <div
+        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Add Employee
+        </h3>
+        <button
+          (click)="closeModal()"
+          type="button"
+          class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="crud-modal"
+        >
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+      </div>
+      <!-- Modal body -->
+      <form [formGroup]="projForm" class="p-4 md:p-5">
+        <div class="grid gap-4 mb-4">
+          <div class="col-span-2">
+            <label
+              for="title"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >Project Title</label
+            >
+            <input
+              formControlName="title"
+              type="text"
+              name="name"
+              id="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Enter Project Title..."
+            />
+          </div>
+
+          <form [formGroup]="techForm">
+            <h3 class="text-lg font-semibold mb-2">Select Technologies</h3>
+
+            <!-- Technology Autocomplete -->
+            <div class="flex items-center">
+              <input
+                formControlName="customTechnology"
+                placeholder="Type a technology"
+                class="border p-2 rounded w-full"
+                (input)="onInputChange()"
+                [matAutocomplete]="auto"
+                [value]="techForm.get('customTechnology')?.value"
+              />
+
+              <mat-autocomplete
+                class="h-20 bg-black opacity-100 backdrop-blur-md"
+                #auto="matAutocomplete"
+                (optionSelected)="onTechnologySelected($event)"
+              >
+                <mat-option
+                  *ngFor="let tech of filteredTechnologies"
+                  [value]="tech"
+                >
+                  {{ tech }}
+                </mat-option>
+                <mat-option
+                  *ngIf="isNewTechnology"
+                  (click)="addCustomTechnology()"
+                  >Add "{{
+                    techForm.get("customTechnology")?.value
+                  }}"</mat-option
+                >
+              </mat-autocomplete>
+            </div>
+
+            <!-- Selected Technologies Display -->
+            <div>
+              <h3 class="text-sm font-semibold">Selected Technologies:</h3>
+              <div class="flex flex-wrap h-10 overflow-scroll">
+                <span
+                  *ngFor="let tech of selectedTechnologies"
+                  class="bg-blue-200 text-blue-800 px-1 py-1 rounded-full text-sm m-1"
+                >
+                  {{ tech }}
+                  <button
+                    type="button"
+                    (click)="removeTechnology(tech)"
+                    class="ml-2 text-red-600"
+                  >
+                    &times;
+                  </button>
+                </span>
+              </div>
+            </div>
+          </form>
+          <div class="col-span-2">
+            <label
+              for="StackBlitzUrl"
+              class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >StackBlitzUrl</label
+            >
+            <input
+              formControlName="StackBlitzUrl"
+              type="email"
+              name="name"
+              id="name"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              placeholder="Enter StackBlitzUrl.."
+            />
+          </div>
+        </div>
+
+        <button
+          (click)="projBtn()"
+          class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          <svg
+            class="me-1 -ms-1 w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          Save
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
