@@ -17,7 +17,7 @@ const challengeSession = require("./routes/challenge");
 dotenv.config();
 app.use(
   cors({
-    origin: "https://findtalent.netlify.app/", // Allow only your Angular frontend
+    origin: "https://findtalent.netlify.app", // Allow only your Angular frontend
     methods: ["GET", "POST", "PATCH", "DELETE"], // Allow these HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow custom headers if needed
   })
