@@ -17,7 +17,7 @@ const challengeSession = require("./routes/challenge");
 dotenv.config();
 app.use(
   cors({
-    origin:  "https://findtalent.netlify.app/", // Allow only your Angular frontend
+    origin: "https://findtalent.netlify.app/", // Allow only your Angular frontend
     methods: ["GET", "POST", "PATCH", "DELETE"], // Allow these HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow custom headers if needed
   })
@@ -37,7 +37,7 @@ const io = socketIo(server, {
   },
 });
 require("dotenv").config();
-// const PORT = 8001;
+const PORT = process.env.PORT || 5000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -78,6 +78,6 @@ app.use("/session", sessionCrud);
 app.use("/challenge", challengeSession);
 
 // Start the server
-server.listen(process.env.PORT, () => {
-  console.log(`Server started at PORT: ${process.env.PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server started at PORT: ${PORT}`);
 });
