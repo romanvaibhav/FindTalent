@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { io } from 'socket.io-client';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocketService {
   private socket: any;
@@ -10,7 +10,7 @@ export class SocketService {
   public currentStatus = this.statusSubject.asObservable();
 
   constructor() {
-    this.socket = io('http://localhost:8001'); // Your server URL
+    this.socket = io('https://findtalent.onrender.com'); // Your server URL
 
     // Listen for 'statusChanged' event from the server
     this.socket.on('statusChanged', (statusData: any) => {
