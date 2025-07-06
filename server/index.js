@@ -17,7 +17,7 @@ const challengeSession = require("./routes/challenge");
 dotenv.config();
 app.use(
   cors({
-    origin: "http://localhost:4200", // Allow only your Angular frontend
+    origin:  "https://findtalent.netlify.app/", // Allow only your Angular frontend
     methods: ["GET", "POST", "PATCH", "DELETE"], // Allow these HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allow custom headers if needed
   })
@@ -31,23 +31,21 @@ const server = http.createServer(app);
 // Initialize Socket.IO with the server and enable CORS for WebSocket
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:4200", // Allow only your Angular frontend
+    origin: "https://findtalent.netlify.app/", // Allow only your Angular frontend
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   },
 });
-
-const PORT = 8001;
+require("dotenv").config();
+// const PORT = 8001;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
+//  `mongodb+srv://vaibhavroman51:roman123@cluster0.ii7ls.mongodb.net/Model?retryWrites=true&w=majority&appName=Cluster0`
 // MongoDB connection
 mongoose
-  .connect(
-    `mongodb+srv://vaibhavroman51:roman123@cluster0.ii7ls.mongodb.net/Model?retryWrites=true&w=majority&appName=Cluster0`
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDb is Connected Successfully");
   })
@@ -80,6 +78,6 @@ app.use("/session", sessionCrud);
 app.use("/challenge", challengeSession);
 
 // Start the server
-server.listen(PORT, () => {
-  console.log(`Server started at PORT: ${PORT}`);
+server.listen(process.env.PORT, () => {
+  console.log(`Server started at PORT: ${process.env.PORT}`);
 });
